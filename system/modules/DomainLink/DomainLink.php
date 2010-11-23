@@ -144,6 +144,62 @@ class DomainLink extends Controller
 
 	
 	/**
+	 * Absolutize an url.
+	 * 
+	 * @param string
+	 * @param Database_Result
+	 * @return string
+	 */
+	public function absolutizeUrl($strUrl, Database_Result $objPage = null)
+	{
+		if (!$objPage)
+		{
+			$objPage = &$GLOBALS['objPage'];
+		}
+		
+		if (!preg_match('#^(\w+://)#', $strUrl) && !preg_match('#^\{\{[^\}]*_url[^\}]*\}\}$#', $strUrl))
+		{
+			// find the target page dns
+			$strDns = $this->findPageDNS($objPage);
+			
+			// find the protocol
+			switch ($GLOBALS['TL_CONFIG']['secureDNS'])
+			{
+			case 'insecure':
+				$strProtocol = 'http';
+				if ($this->Environment->ssl)
+				{
+					$blnForce = true;
+				}
+				break;
+
+			case 'secure':
+				$strProtocol = 'https';
+				if (!$this->Environment->ssl)
+				{
+					$blnForce = true;
+				}
+				break;
+				
+			default:
+			case 'auto':
+				if ($this->Environment->ssl)
+				{
+					$strProtocol = 'https';
+				}
+				else
+				{
+					$strProtocol = 'http';
+				}
+				break;
+			}
+			
+			$strUrl = $strProtocol . '://' . $strDns . ($strUrl[0] == '/' ? '' : $GLOBALS['TL_CONFIG']['websitePath'] . '/') . $strUrl;
+		}
+		return $strUrl;
+	}
+	
+	/**
 	 * Generate an absolute url if the domain of the target page is different from the domain of the current page.
 	 * 
 	 * @param array
