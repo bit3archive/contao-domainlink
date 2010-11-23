@@ -51,7 +51,6 @@ class DomainLink extends Controller
 	public function __construct() {
 		parent::__construct();
 		$this->import('Database');
-		$this->import('xNavigationEnvironment', 'Env');
 	}
 	
 	/**
