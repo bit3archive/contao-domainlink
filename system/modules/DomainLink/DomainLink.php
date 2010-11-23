@@ -88,26 +88,29 @@ class DomainLink extends Controller
 					$objPage = $this->getPageDetails($objPage->id);
 				}
 				$arrTrail = $objPage->trail;
-				$objRootPage = $this->Database->execute("
-						SELECT
-							*
-						FROM
-							`tl_page`
-						WHERE
-								`id` IN (" . implode(',', $arrTrail) . ")
-							AND `type`='root'
-							AND `dns`!=''
-						ORDER BY
-							`id`=" . implode(',`id`=', $arrTrail) . "
-						LIMIT
-							1");
-				if ($objRootPage->next())
+				if (is_array($arrTrail) && count($arrTrail) >  0)
 				{
-					foreach ($arrTrail as $intId)
+					$objRootPage = $this->Database->execute("
+							SELECT
+								*
+							FROM
+								`tl_page`
+							WHERE
+									`id` IN (" . implode(',', $arrTrail) . ")
+								AND `type`='root'
+								AND `dns`!=''
+							ORDER BY
+								`id`=" . implode(',`id`=', $arrTrail) . "
+							LIMIT
+								1");
+					if ($objRootPage->next())
 					{
-						DomainLink::$arrDNSCache[$intId] = $objRootPage->dns;
+						foreach ($arrTrail as $intId)
+						{
+							DomainLink::$arrDNSCache[$intId] = $objRootPage->dns;
+						}
+						return $objRootPage->dns;
 					}
-					return $objRootPage->dns;
 				}
 			}
 		}
