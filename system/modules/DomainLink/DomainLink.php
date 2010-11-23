@@ -38,13 +38,13 @@
  */
 class DomainLink extends Controller
 {
-	
 	/**
 	 * DNS page related cache.
 	 * @var array
 	 */
 	protected static $arrDNSCache = array();
-
+	
+	
 	/**
 	 * Initialize the object
 	 */
@@ -53,33 +53,68 @@ class DomainLink extends Controller
 		$this->import('Database');
 	}
 	
+	
 	/**
 	 * Search recursive the page dns.
 	 * @param array
 	 * @return string
 	 */
-	protected function findPageDNS($arrRow) {
-		if ($arrRow != null && count($arrRow)) {
-			if (isset(DomainLink::$arrDNSCache[$arrRow['id']])) {
-				return DomainLink::$arrDNSCache[$arrRow['id']];
-			} else if ($arrRow['type'] == 'root') {
-				if (!empty($arrRow['dns']))
+	public function findPageDNS($objPage) {
+		if ($objPage != null) {
+			// inherit page details
+			if (is_array($objPage))
+			{
+				$objPage = $this->getPageDetails($objPage['id']);
+			}
+			
+			// use cached dns
+			if (isset(DomainLink::$arrDNSCache[$objPage->id]))
+			{
+				return DomainLink::$arrDNSCache[$objPage->id];
+			}
+			// the current page is the root page
+			else if ($objPage->type == 'root')
+			{
+				if (!empty($objPage->dns))
 				{
-					return DomainLink::$arrDNSCache[$arrRow['id']] = $arrRow['dns'];
+					return DomainLink::$arrDNSCache[$objPage->id] = $objPage->dns;
 				}
-			} else {
-				$objPage = $this->Database->prepare("SELECT id,pid,type,dns FROM tl_page WHERE id=" . (empty($arrRow['pid']) ? "(SELECT pid FROM tl_page WHERE id=?)" : "?"))
-										->execute(empty($arrRow['pid']) ? $arrRow['id'] : $arrRow['pid']);
-				if ($objPage->next())
+			}
+			// search for a root page with defined dns
+			else
+			{
+				$arrTrail = $objPage->trail;
+				$objRootPage = $this->Database->execute("
+						SELECT
+							*
+						FROM
+							`tl_page`
+						WHERE
+								`id` IN (" . implode(',', $arrTrail) . ")
+							AND `type`='root'
+							AND `dns`!=''
+						ORDER BY
+							`id`=" . implode(',`id`=', $arrTrail) . "
+						LIMIT
+							1");
+				if ($objRootPage->next())
 				{
-					return DomainLink::$arrDNSCache[$arrRow['id']] = $this->findPageDNS($objPage->row());
+					foreach ($arrTrail as $intId)
+					{
+						DomainLink::$arrDNSCache[$intId] = $objRootPage->dns;
+					}
+					return $objRootPage->dns;
 				}
 			}
 		}
+		
+		// no page dns found, use base dns
 		if (!empty($GLOBALS['TL_CONFIG']['baseDNS']))
 		{
 			return $GLOBALS['TL_CONFIG']['baseDNS'];
 		}
+		
+		// no base dns defined, use request dns
 		else
 		{
 			$xhost = $this->Environment->httpXForwardedHost;
@@ -87,13 +122,14 @@ class DomainLink extends Controller
 		}
 	}
 	
+	
 	/**
 	 * Replace insert tags with their values
 	 * @param string
 	 * @param bool
 	 * @return string
 	 */
-	protected function replaceDomainLinkInsertTags($strBuffer, $blnCache=false)
+	public function replaceDomainLinkInsertTags($strBuffer, $blnCache=false)
 	{
 		global $objPage;
 
@@ -106,21 +142,29 @@ class DomainLink extends Controller
 		return false;
 	}
 
+	
 	/**
 	 * Generate an absolute url if the domain of the target page is different from the domain of the current page.
+	 * 
 	 * @param array
 	 * @param string
 	 * @param string
 	 * @return string
 	 */
-	protected function generateDomainLink($arrRow, $strParams, $strUrl)
+	public function generateDomainLink($arrRow, $strParams, $strUrl, $blnForce = false)
 	{
 		global $objPage;
-		if (!preg_match('#^(\w+://)#', $strUrl)) {
-			$strCurrent = $objPage != null ? $this->findPageDNS($objPage->row()) : $this->Environment->httpHost;
+		if (!preg_match('#^(\w+://)#', $strUrl) && !preg_match('#^\{\{[^\}]*_url[^\}]*\}\}$#', $strUrl))
+		{
+			// find the current page dns
+			$strCurrent = $this->findPageDNS($objPage != null ? $objPage : null);
+			// find the target page dns
 			$strTarget = $this->findPageDNS($arrRow);
-			$blnForce = $strCurrent != $strTarget;
-			switch ($GLOBALS['TL_CONFIG']['secureDNS']) {
+			// force absolute url
+			$blnForce = $blnForce ? true : $strCurrent != $strTarget;
+			// find the protocol
+			switch ($GLOBALS['TL_CONFIG']['secureDNS'])
+			{
 			case 'insecure':
 				$strProtocol = 'http';
 				if ($this->Environment->ssl)
@@ -150,7 +194,7 @@ class DomainLink extends Controller
 				break;
 			}
 			if (strlen($strTarget) && $blnForce) {
-				$strUrl = $strProtocol . '://' . $strTarget . $GLOBALS['TL_CONFIG']['websitePath'] . '/' . $strUrl;
+				$strUrl = $strProtocol . '://' . $strTarget . ($strUrl[0] == '/' ? '' : $GLOBALS['TL_CONFIG']['websitePath'] . '/') . $strUrl;
 			}
 		}
 		return $strUrl;
