@@ -60,19 +60,19 @@ class DomainLink extends Controller
 	 */
 	protected function findPageDNS($arrRow) {
 		if ($arrRow != null && count($arrRow)) {
-			if (isset(xNavigation::$arrDNSCache[$arrRow['id']])) {
-				return xNavigation::$arrDNSCache[$arrRow['id']];
+			if (isset(DomainLink::$arrDNSCache[$arrRow['id']])) {
+				return DomainLink::$arrDNSCache[$arrRow['id']];
 			} else if ($arrRow['type'] == 'root') {
 				if (!empty($arrRow['dns']))
 				{
-					return xNavigation::$arrDNSCache[$arrRow['id']] = $arrRow['dns'];
+					return DomainLink::$arrDNSCache[$arrRow['id']] = $arrRow['dns'];
 				}
 			} else {
 				$objPage = $this->Database->prepare("SELECT id,pid,type,dns FROM tl_page WHERE id=" . (empty($arrRow['pid']) ? "(SELECT pid FROM tl_page WHERE id=?)" : "?"))
 										->execute(empty($arrRow['pid']) ? $arrRow['id'] : $arrRow['pid']);
 				if ($objPage->next())
 				{
-					return xNavigation::$arrDNSCache[$arrRow['id']] = $this->findPageDNS($objPage->row());
+					return DomainLink::$arrDNSCache[$arrRow['id']] = $this->findPageDNS($objPage->row());
 				}
 			}
 		}
