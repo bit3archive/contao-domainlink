@@ -83,6 +83,10 @@ class DomainLink extends Controller
 			// search for a root page with defined dns
 			else
 			{
+				if (!is_array($objPage->trail))
+				{
+					$objPage = $this->getPageDetails($objPage->id);
+				}
 				$arrTrail = $objPage->trail;
 				$objRootPage = $this->Database->execute("
 						SELECT
