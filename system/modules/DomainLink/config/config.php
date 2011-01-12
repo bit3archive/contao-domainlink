@@ -29,6 +29,12 @@
 
 
 /**
+ * Settings
+ */
+$GLOBALS['TL_CONFIG']['traceDomainLink'] = false;
+
+
+/**
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['generateFrontendUrl'][] = array('DomainLink', 'generateDomainLink');

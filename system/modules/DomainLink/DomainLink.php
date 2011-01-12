@@ -39,16 +39,40 @@
 class DomainLink extends Controller
 {
 	/**
+	 * Singleton
+	 */
+	private static $objInstance = null;
+
+
+	/**
+	 * Singleton
+	 */
+	public static function getInstance()
+	{
+		if (self::$objInstance == null)
+		{
+			self::$objInstance = new DomainLink();
+			if ($GLOBALS['TL_CONFIG']['traceDomainLink'])
+			{
+				self::$objInstance->file = TL_ROOT . '/system/tmp/traceDomainLink-' . time() . '-r'  . rand() . '.log';
+			}
+		}
+		return self::$objInstance;
+	}
+
+	private $strFile;
+	
+	/**
 	 * DNS page related cache.
 	 * @var array
 	 */
-	protected static $arrDNSCache = array();
-	
-	
+	protected $arrDNSCache = array();
+
+
 	/**
 	 * Initialize the object
 	 */
-	public function __construct() {
+	protected function __construct() {
 		parent::__construct();
 		$this->import('Database');
 	}
@@ -68,16 +92,16 @@ class DomainLink extends Controller
 			}
 			
 			// use cached dns
-			if (isset(DomainLink::$arrDNSCache[$objPage->id]))
+			if (isset($this->arrDNSCache[$objPage->id]))
 			{
-				return DomainLink::$arrDNSCache[$objPage->id];
+				return $this->arrDNSCache[$objPage->id];
 			}
 			// the current page is the root page
 			else if ($objPage->type == 'root')
 			{
 				if (!empty($objPage->dns))
 				{
-					return DomainLink::$arrDNSCache[$objPage->id] = $objPage->dns;
+					return $this->arrDNSCache[$objPage->id] = $objPage->dns;
 				}
 			}
 			// search for a root page with defined dns
@@ -107,7 +131,7 @@ class DomainLink extends Controller
 					{
 						foreach ($arrTrail as $intId)
 						{
-							DomainLink::$arrDNSCache[$intId] = $objRootPage->dns;
+							$this->arrDNSCache[$intId] = $objRootPage->dns;
 						}
 						return $objRootPage->dns;
 					}
@@ -163,7 +187,7 @@ class DomainLink extends Controller
 		{
 			$objPage = &$GLOBALS['objPage'];
 		}
-		
+
 		if (!preg_match('#^(\w+://)#', $strUrl) && !preg_match('#^\{\{[^\}]*_url[^\}]*\}\}$#', $strUrl))
 		{
 			// find the target page dns
@@ -216,6 +240,34 @@ class DomainLink extends Controller
 	 */
 	public function generateDomainLink($arrRow, $strParams, $strUrl, $blnForce = false)
 	{
+		$arrTrace = debug_backtrace();
+		
+		if ($GLOBALS['TL_CONFIG']['traceDomainLink'])
+		{
+			$strTraceFile = fopen($this->file, 'a');
+			fwrite($strTraceFile, "URL: $strUrl\nbacktrace\n");
+			foreach ($arrTrace as $arrCall)
+			{
+				fwrite($strTraceFile, "  call $arrCall[class]$arrCall[type]$arrCall[function]() from $arrCall[file][$arrCall[line]]\n");
+			}
+		}
+
+		// check for incompatible calls and cancel processing
+		foreach ($arrTrace as $arrCall)
+		{
+			if (	$arrCall['class'] == 'ModuleChangelanguage'
+				||	$arrCall['class'] == 'Automator' && $arrCall['function'] == 'generateSitemap')
+			{
+				if ($GLOBALS['TL_CONFIG']['traceDomainLink'])
+				{
+					fwrite($strTraceFile, "Result: cancel processing, incompatibility check\n");
+					fwrite($strTraceFile, "\n\n");
+					fclose($strTraceFile);
+				}
+				return $strUrl;
+			}
+		}
+		
 		global $objPage;
 		if (!preg_match('#^(\w+://)#', $strUrl) && !preg_match('#^\{\{[^\}]*_url[^\}]*\}\}$#', $strUrl))
 		{
@@ -258,7 +310,16 @@ class DomainLink extends Controller
 			}
 			if (strlen($strTarget) && $blnForce) {
 				$strUrl = $strProtocol . '://' . $strTarget . ($strUrl[0] == '/' ? '' : $GLOBALS['TL_CONFIG']['websitePath'] . '/') . $strUrl;
+				if ($GLOBALS['TL_CONFIG']['traceDomainLink'])
+				{
+					fwrite($strTraceFile, "Result: rewrite url to $strUrl\n");
+				}
 			}
+		}
+		if ($GLOBALS['TL_CONFIG']['traceDomainLink'])
+		{
+			fwrite($strTraceFile, "\n\n");
+			fclose($strTraceFile);
 		}
 		return $strUrl;
 	}

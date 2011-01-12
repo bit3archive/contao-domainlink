@@ -31,13 +31,13 @@
 /**
  * System configuration
  */
-$GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] .= ';{dns_legend:hide},baseDNS,secureDNS';
+$GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] .= ';{dns_legend:hide},baseDNS,secureDNS;{domainLink_legend:hide},traceDomainLink';
 
 $GLOBALS['TL_DCA']['tl_settings']['fields']['baseDNS'] = array
 (
 	'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['baseDNS'],
 	'inputType'               => 'text',
-	'eval'                    => array('rgxp'=>'url', 'decodeEntities'=>true, 'maxlength'=>255)
+	'eval'                    => array('rgxp'=>'url', 'decodeEntities'=>true, 'maxlength'=>255, 'tl_class'=>'w50')
 );
 
 $GLOBALS['TL_DCA']['tl_settings']['fields']['secureDNS'] = array
@@ -45,7 +45,15 @@ $GLOBALS['TL_DCA']['tl_settings']['fields']['secureDNS'] = array
 	'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['secureDNS'],
 	'inputType'               => 'select',
 	'options'                 => array('auto', 'insecure', 'secure'),
-	'reference'               => &$GLOBALS['TL_LANG']['tl_settings']['dns_mode']
+	'reference'               => &$GLOBALS['TL_LANG']['tl_settings']['dns_mode'],
+	'eval'                    => array('tl_class'=>'w50')
+);
+
+$GLOBALS['TL_DCA']['tl_settings']['fields']['traceDomainLink'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['traceDomainLink'],
+	'inputType'               => 'checkbox',
+	'eval'                    => array('tl_class'=>'w50')
 );
 
 ?>
