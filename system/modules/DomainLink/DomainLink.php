@@ -188,7 +188,7 @@ class DomainLink extends Controller
 			$objPage = &$GLOBALS['objPage'];
 		}
 
-		if (!preg_match('#^(\w+://)#', $strUrl) && !preg_match('#^\{\{[^\}]*_url[^\}]*\}\}$#', $strUrl))
+		if (!preg_match('/^#/', $strUrl) && !preg_match('#^(\w+://)#', $strUrl) && !preg_match('#^\{\{[^\}]*_url[^\}]*\}\}$#', $strUrl))
 		{
 			// find the target page dns
 			$strDns = $this->findPageDNS($objPage);
