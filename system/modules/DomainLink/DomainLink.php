@@ -60,13 +60,19 @@ class DomainLink extends Controller
 		return self::$objInstance;
 	}
 
-	private $strFile;
 	
 	/**
 	 * DNS page related cache.
 	 * @var array
 	 */
 	protected $arrDNSCache = array();
+
+	
+	/**
+	 * DNS security related cache.
+	 * @var array
+	 */
+	protected $arrSecurityCache = array();
 
 
 	/**
@@ -101,7 +107,8 @@ class DomainLink extends Controller
 			{
 				if (!empty($objPage->dns))
 				{
-					return $this->arrDNSCache[$objPage->id] = $objPage->dns;
+					$this->arrSecurityCache[$objPage->id] = $objPage->secureDNS;
+					return $this->arrDNSCache[$objPage->id] = ($objPage->wwwDNS ? 'www.' : '') . $objPage->dns;
 				}
 			}
 			// search for a root page with defined dns
@@ -131,9 +138,10 @@ class DomainLink extends Controller
 					{
 						foreach ($arrTrail as $intId)
 						{
-							$this->arrDNSCache[$intId] = $objRootPage->dns;
+							$this->arrSecurityCache[$intId] = $objRootPage->secureDNS;
+							$this->arrDNSCache[$intId] = ($objRootPage->wwwDNS ? 'www.' : '') . $objRootPage->dns;
 						}
-						return $objRootPage->dns;
+						return $this->arrDNSCache[$intId];
 					}
 				}
 			}
@@ -150,6 +158,83 @@ class DomainLink extends Controller
 		{
 			$xhost = $this->Environment->httpXForwardedHost;
 			return (!empty($xhost) ? $xhost . '/' : '') . $this->Environment->httpHost;
+		}
+	}
+	
+	
+	/**
+	 * Search recursive the page security.
+	 * @param array
+	 * @return string
+	 */
+	public function findPageSecurity($objPage) {
+		if ($objPage != null) {
+			// inherit page details
+			if (is_array($objPage))
+			{
+				$objPage = $this->getPageDetails($objPage['id']);
+			}
+			
+			// use cached security
+			if (isset($this->arrSecurityCache[$objPage->id]))
+			{
+				return $this->arrSecurityCache[$objPage->id];
+			}
+			// the current page is the root page
+			else if ($objPage->type == 'root')
+			{
+				if (!empty($objPage->dns))
+				{
+					$this->arrDNSCache[$objPage->id] = ($objPage->wwwDNS ? 'www.' : '') . $objPage->dns;
+					return $this->arrSecurityCache[$objPage->id] = $objPage->secureDNS ? $objPage->secureDNS : $GLOBALS['TL_CONFIG']['secureDNS'];
+				}
+			}
+			// search for a root page with defined dns security
+			else
+			{
+				if (!is_array($objPage->trail))
+				{
+					$objPage = $this->getPageDetails($objPage->id);
+				}
+				$arrTrail = $objPage->trail;
+				if (is_array($arrTrail) && count($arrTrail) >  0)
+				{
+					$objRootPage = $this->Database->execute("
+							SELECT
+								*
+							FROM
+								`tl_page`
+							WHERE
+									`id` IN (" . implode(',', $arrTrail) . ")
+								AND `type`='root'
+								AND `dns`!=''
+							ORDER BY
+								`id`=" . implode(',`id`=', $arrTrail) . "
+							LIMIT
+								1");
+					if ($objRootPage->next())
+					{
+						foreach ($arrTrail as $intId)
+						{
+							$this->arrSecurityCache[$intId] = $objRootPage->secureDNS ? $objRootPage->secureDNS : $GLOBALS['TL_CONFIG']['secureDNS'];
+							$this->arrDNSCache[$intId] = ($objRootPage->wwwDNS ? 'www.' : '') . $objRootPage->dns;
+						}
+						return $this->arrSecurityCache[$intId];
+					}
+				}
+			}
+		}
+		
+		// no page dns security found, use global dns security
+		if (!empty($GLOBALS['TL_CONFIG']['secureDNS']))
+		{
+			return $GLOBALS['TL_CONFIG']['secureDNS'];
+		}
+		
+		// no global dns security defined, use auto mode
+		else
+		{
+			return 'auto';
 		}
 	}
 	
@@ -194,7 +279,7 @@ class DomainLink extends Controller
 			$strDns = $this->findPageDNS($objPage);
 			
 			// find the protocol
-			switch ($GLOBALS['TL_CONFIG']['secureDNS'])
+			switch ($this->findPageSecurity($objPage))
 			{
 			case 'insecure':
 				$strProtocol = 'http';
@@ -272,13 +357,13 @@ class DomainLink extends Controller
 		if (!preg_match('#^(\w+://)#', $strUrl) && !preg_match('#^\{\{[^\}]*_url[^\}]*\}\}$#', $strUrl))
 		{
 			// find the current page dns
-			$strCurrent = $this->findPageDNS($objPage != null ? $objPage : null);
+			$strCurrent = $this->findPageDNS($objPage);
 			// find the target page dns
 			$strTarget = $this->findPageDNS($arrRow);
 			// force absolute url
 			$blnForce = $blnForce ? true : $strCurrent != $strTarget;
 			// find the protocol
-			switch ($GLOBALS['TL_CONFIG']['secureDNS'])
+			switch ($this->findPageSecurity($objPage))
 			{
 			case 'insecure':
 				$strProtocol = 'http';
