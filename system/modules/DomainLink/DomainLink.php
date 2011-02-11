@@ -340,8 +340,9 @@ class DomainLink extends Controller
 		// check for incompatible calls and cancel processing
 		foreach ($arrTrace as $arrCall)
 		{
-			if (	$arrCall['class'] == 'ModuleChangelanguage'
-				||	$arrCall['class'] == 'Automator' && $arrCall['function'] == 'generateSitemap')
+			if (	isset($GLOBALS['DNS']['incompatibleComponents'][$arrCall['class']])
+				&&	(	$GLOBALS['DNS']['incompatibleComponents'][$arrCall['class']] === true
+					||	in_array($arrCall['function'], $GLOBALS['DNS']['incompatibleComponents'][$arrCall['class']])))
 			{
 				if ($GLOBALS['TL_CONFIG']['traceDomainLink'])
 				{

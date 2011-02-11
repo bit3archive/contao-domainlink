@@ -32,6 +32,12 @@
  * Settings
  */
 $GLOBALS['TL_CONFIG']['traceDomainLink'] = false;
+$GLOBALS['DNS']['incompatibleComponents'] = array
+(
+	'ModuleChangelanguage' => true,
+	'Automator' => array('generateSitemap'),
+	'GoogleSitemap' => array('generateSitemap')
+);
 
 
 /**
