@@ -369,7 +369,7 @@ class DomainLink extends Controller
 			// force absolute url
 			$blnForce = $blnForce ? true : $strCurrent != $strTarget;
 			// find the protocol
-			switch ($this->findPageSecurity($objPage))
+			switch ($this->findPageSecurity($arrRow))
 			{
 			case 'insecure':
 				$strProtocol = 'http';
