@@ -57,10 +57,6 @@ class DomainLink extends Controller
 		if (self::$objInstance == null)
 		{
 			self::$objInstance = new DomainLink();
-			if ($GLOBALS['TL_CONFIG']['traceDomainLink'])
-			{
-				self::$objInstance->file = TL_ROOT . '/system/tmp/traceDomainLink-' . time() . '-r'  . rand() . '.log';
-			}
 		}
 		return self::$objInstance;
 	}
@@ -81,11 +77,21 @@ class DomainLink extends Controller
 
 
 	/**
+	 * The trace file.
+	 */
+	protected $file = null;
+
+	/**
 	 * Initialize the object
 	 */
 	protected function __construct() {
 		parent::__construct();
 		$this->import('Database');
+		
+		if ($GLOBALS['TL_CONFIG']['traceDomainLink'])
+		{
+			$this->file = TL_ROOT . '/system/logs/traceDomainLink-' . time() . '-r'  . rand() . '.log';
+		}
 	}
 	
 	
@@ -110,7 +116,7 @@ class DomainLink extends Controller
 			// the current page is the root page
 			else if ($objPage->type == 'root')
 			{
-				if (!empty($objPage->dns))
+				if (strlen($objPage->dns))
 				{
 					$this->arrSecurityCache[$objPage->id] = $objPage->secureDNS;
 					return $this->arrDNSCache[$objPage->id] = ($objPage->wwwDNS ? 'www.' : '') . $objPage->dns;

@@ -39,8 +39,9 @@
 $GLOBALS['TL_CONFIG']['traceDomainLink'] = false;
 $GLOBALS['DNS']['incompatibleComponents'] = array
 (
-	'ModuleChangelanguage' => true,
 	'Automator' => array('generateSitemap'),
+	'ModuleMaintenance' => true,
+	'ModuleChangelanguage' => true,
 	'GoogleSitemap' => array('generateSitemap')
 );
 
