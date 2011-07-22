@@ -12,6 +12,5 @@
 -- 
 
 CREATE TABLE `tl_page` (
-  `wwwDNS` char(1) NOT NULL default '',
   `secureDNS` varchar(10) NOT NULL default '',
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

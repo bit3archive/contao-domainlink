@@ -36,8 +36,7 @@
 /**
  * Fields
  */
-$GLOBALS['TL_LANG']['tl_page']['wwwDNS'] = array('www. zum Domainnamen hinzufügen', 'Fügt die Subdomain www. vor dem Domainnamen hinzu (aus example.com wird www.example.com).');
-$GLOBALS['TL_LANG']['tl_page']['secureDNS']       = array('Gesicherte Domain', 'Hier können Sie angeben, ob geschütze oder ungeschützte URLs generiert werden sollen. Automatisch bestimmt das Protokoll anhand des Requests, die anderen Optionen forcieren einen http:// Link, auch wenn die Seite mit https:// aufgerufen wurde und umgekehrt!');
+$GLOBALS['TL_LANG']['tl_page']['secureDNS'] = array('Gesicherte Domain', 'Hier können Sie angeben, ob geschütze oder ungeschützte URLs generiert werden sollen. Automatisch bestimmt das Protokoll anhand des Requests, die anderen Optionen forcieren einen http:// Link, auch wenn die Seite mit https:// aufgerufen wurde und umgekehrt!');
 
 
 /**

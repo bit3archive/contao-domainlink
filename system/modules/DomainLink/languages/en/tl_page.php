@@ -36,8 +36,7 @@
 /**
  * Fields
  */
-$GLOBALS['TL_LANG']['tl_page']['wwwDNS'] = array('Add www. to domain name', 'Add the subdomain www. to the domain name (example.com will be www.example.com).');
-$GLOBALS['TL_LANG']['tl_page']['secureDNS']       = array('Secured domain', 'Specify the security policy.');
+$GLOBALS['TL_LANG']['tl_page']['secureDNS'] = array('Secured domain', 'Specify the security policy.');
 
 
 /**

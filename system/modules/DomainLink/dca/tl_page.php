@@ -35,15 +35,8 @@
 
 $GLOBALS['TL_DCA']['tl_page']['palettes']['root'] = preg_replace(
 	'#([,;]dns)([,;])#',
-	'$1,wwwDNS,secureDNS$2',
+	'$1,secureDNS$2',
 	$GLOBALS['TL_DCA']['tl_page']['palettes']['root']);
-
-$GLOBALS['TL_DCA']['tl_page']['fields']['wwwDNS'] = array
-(
-	'label'                   => &$GLOBALS['TL_LANG']['tl_page']['wwwDNS'],
-	'inputType'               => 'checkbox',
-	'eval'                    => array('tl_class'=>'w50')
-);
 
 $GLOBALS['TL_DCA']['tl_page']['fields']['secureDNS'] = array
 (

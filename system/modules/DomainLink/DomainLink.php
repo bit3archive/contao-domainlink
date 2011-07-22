@@ -119,7 +119,7 @@ class DomainLink extends Controller
 				if (strlen($objPage->dns))
 				{
 					$this->arrSecurityCache[$objPage->id] = $objPage->secureDNS;
-					return $this->arrDNSCache[$objPage->id] = ($objPage->wwwDNS ? 'www.' : '') . $objPage->dns;
+					return $this->arrDNSCache[$objPage->id] = $objPage->dns;
 				}
 			}
 			// search for a root page with defined dns
@@ -150,7 +150,7 @@ class DomainLink extends Controller
 						foreach ($arrTrail as $intId)
 						{
 							$this->arrSecurityCache[$intId] = $objRootPage->secureDNS;
-							$this->arrDNSCache[$intId] = ($objRootPage->wwwDNS ? 'www.' : '') . $objRootPage->dns;
+							$this->arrDNSCache[$intId] = $objRootPage->dns;
 						}
 						return $this->arrDNSCache[$intId];
 					}
@@ -196,7 +196,7 @@ class DomainLink extends Controller
 			{
 				if (!empty($objPage->dns))
 				{
-					$this->arrDNSCache[$objPage->id] = ($objPage->wwwDNS ? 'www.' : '') . $objPage->dns;
+					$this->arrDNSCache[$objPage->id] = $objPage->dns;
 					return $this->arrSecurityCache[$objPage->id] = $objPage->secureDNS ? $objPage->secureDNS : $GLOBALS['TL_CONFIG']['secureDNS'];
 				}
 			}
@@ -228,7 +228,7 @@ class DomainLink extends Controller
 						foreach ($arrTrail as $intId)
 						{
 							$this->arrSecurityCache[$intId] = $objRootPage->secureDNS ? $objRootPage->secureDNS : $GLOBALS['TL_CONFIG']['secureDNS'];
-							$this->arrDNSCache[$intId] = ($objRootPage->wwwDNS ? 'www.' : '') . $objRootPage->dns;
+							$this->arrDNSCache[$intId] = $objRootPage->dns;
 						}
 						return $this->arrSecurityCache[$intId];
 					}
