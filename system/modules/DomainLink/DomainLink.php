@@ -373,7 +373,7 @@ class DomainLink extends Controller
 			// find the target page dns
 			$strTarget = $this->findPageDNS($arrRow);
 			// force absolute url
-			$blnForce = $blnForce ? true : $strCurrent != $strTarget;
+			$blnForce = $blnForce || $GLOBALS['TL_CONFIG']['forceAbsoluteDomainLink'] ? true : $strCurrent != $strTarget;
 			// find the protocol
 			switch ($this->findPageSecurity($arrRow))
 			{

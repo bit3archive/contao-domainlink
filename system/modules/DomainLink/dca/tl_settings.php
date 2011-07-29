@@ -36,7 +36,7 @@
 /**
  * System configuration
  */
-$GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] .= ';{dns_legend:hide},baseDNS,secureDNS;{domainLink_legend:hide},traceDomainLink';
+$GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] .= ';{dns_legend:hide},baseDNS,secureDNS;{domainLink_legend:hide},traceDomainLink,forceAbsoluteDomainLink';
 
 $GLOBALS['TL_DCA']['tl_settings']['fields']['baseDNS'] = array
 (
@@ -57,6 +57,13 @@ $GLOBALS['TL_DCA']['tl_settings']['fields']['secureDNS'] = array
 $GLOBALS['TL_DCA']['tl_settings']['fields']['traceDomainLink'] = array
 (
 	'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['traceDomainLink'],
+	'inputType'               => 'checkbox',
+	'eval'                    => array('tl_class'=>'w50')
+);
+
+$GLOBALS['TL_DCA']['tl_settings']['fields']['forceAbsoluteDomainLink'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['forceAbsoluteDomainLink'],
 	'inputType'               => 'checkbox',
 	'eval'                    => array('tl_class'=>'w50')
 );

@@ -36,7 +36,13 @@
 /**
  * Settings
  */
-$GLOBALS['TL_CONFIG']['traceDomainLink'] = false;
+$GLOBALS['TL_CONFIG']['traceDomainLink']         = false;
+$GLOBALS['TL_CONFIG']['forceAbsoluteDomainLink'] = false;
+
+
+/**
+ * Incompatible components.
+ */
 $GLOBALS['DNS']['incompatibleComponents'] = array
 (
 	'Automator' => array('generateSitemap'),
