@@ -7,7 +7,7 @@
  * Extension for:
  * Contao Open Source CMS
  * Copyright (C) 2005-2010 Leo Feyer
- * 
+ *
  * Formerly known as TYPOlight Open Source CMS.
  *
  * This program is free software: you can redistribute it and/or
@@ -61,14 +61,14 @@ class DomainLink extends Controller
 		return self::$objInstance;
 	}
 
-	
+
 	/**
 	 * DNS page related cache.
 	 * @var array
 	 */
 	protected $arrDNSCache = array();
 
-	
+
 	/**
 	 * DNS security related cache.
 	 * @var array
@@ -87,14 +87,14 @@ class DomainLink extends Controller
 	protected function __construct() {
 		parent::__construct();
 		$this->import('Database');
-		
+
 		if ($GLOBALS['TL_CONFIG']['traceDomainLink'])
 		{
 			$this->file = TL_ROOT . '/system/logs/traceDomainLink-' . time() . '-r'  . rand() . '.log';
 		}
 	}
-	
-	
+
+
 	/**
 	 * Search recursive the page dns.
 	 * @param array
@@ -107,7 +107,7 @@ class DomainLink extends Controller
 			{
 				$objPage = $this->getPageDetails($objPage['id']);
 			}
-			
+
 			// use cached dns
 			if (isset($this->arrDNSCache[$objPage->id]))
 			{
@@ -157,13 +157,13 @@ class DomainLink extends Controller
 				}
 			}
 		}
-		
+
 		// no page dns found, use base dns
 		if (!empty($GLOBALS['TL_CONFIG']['baseDNS']))
 		{
 			return $GLOBALS['TL_CONFIG']['baseDNS'];
 		}
-		
+
 		// no base dns defined, use request dns
 		else
 		{
@@ -171,8 +171,8 @@ class DomainLink extends Controller
 			return (!empty($xhost) ? $xhost . '/' : '') . $this->Environment->httpHost;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Search recursive the page security.
 	 * @param array
@@ -185,7 +185,7 @@ class DomainLink extends Controller
 			{
 				$objPage = $this->getPageDetails($objPage['id']);
 			}
-			
+
 			// use cached security
 			if (isset($this->arrSecurityCache[$objPage->id]))
 			{
@@ -235,21 +235,21 @@ class DomainLink extends Controller
 				}
 			}
 		}
-		
+
 		// no page dns security found, use global dns security
 		if (!empty($GLOBALS['TL_CONFIG']['secureDNS']))
 		{
 			return $GLOBALS['TL_CONFIG']['secureDNS'];
 		}
-		
+
 		// no global dns security defined, use auto mode
 		else
 		{
 			return 'auto';
 		}
 	}
-	
-	
+
+
 	/**
 	 * Replace insert tags with their values
 	 * @param string
@@ -269,10 +269,10 @@ class DomainLink extends Controller
 		return false;
 	}
 
-	
+
 	/**
 	 * Absolutize an url.
-	 * 
+	 *
 	 * @param string
 	 * @param Database_Result
 	 * @return string
@@ -284,11 +284,11 @@ class DomainLink extends Controller
 			$objPage = &$GLOBALS['objPage'];
 		}
 
-		if (!preg_match('/^#/', $strUrl) && !preg_match('#^(\w+://)#', $strUrl) && !preg_match('#^\{\{[^\}]*_url[^\}]*\}\}$#', $strUrl))
+		if (!preg_match('/^#/', $strUrl) && !preg_match('#^(\w+:)#', $strUrl) && !preg_match('#^\{\{.*\}\}$#', $strUrl))
 		{
 			// find the target page dns
 			$strDns = $this->findPageDNS($objPage);
-			
+
 			// find the protocol
 			switch ($this->findPageSecurity($objPage))
 			{
@@ -307,7 +307,7 @@ class DomainLink extends Controller
 					$blnForce = true;
 				}
 				break;
-				
+
 			default:
 			case 'auto':
 				if ($this->Environment->ssl)
@@ -320,15 +320,15 @@ class DomainLink extends Controller
 				}
 				break;
 			}
-			
+
 			$strUrl = $strProtocol . '://' . $strDns . ($strUrl[0] == '/' ? '' : $GLOBALS['TL_CONFIG']['websitePath'] . '/') . $strUrl;
 		}
 		return $strUrl;
 	}
-	
+
 	/**
 	 * Generate an absolute url if the domain of the target page is different from the domain of the current page.
-	 * 
+	 *
 	 * @param array
 	 * @param string
 	 * @param string
@@ -337,7 +337,7 @@ class DomainLink extends Controller
 	public function generateDomainLink($arrRow, $strParams, $strUrl, $blnForce = false)
 	{
 		$arrTrace = debug_backtrace();
-		
+
 		if ($GLOBALS['TL_CONFIG']['traceDomainLink'])
 		{
 			$strTraceFile = fopen($this->file, 'a');
@@ -364,9 +364,9 @@ class DomainLink extends Controller
 				return $strUrl;
 			}
 		}
-		
+
 		global $objPage;
-		if (!preg_match('#^(\w+://)#', $strUrl) && !preg_match('#^\{\{[^\}]*_url[^\}]*\}\}$#', $strUrl))
+		if (!preg_match('#^(\w+:)#', $strUrl) && !preg_match('#^\{\{.*\}\}$#', $strUrl))
 		{
 			// find the current page dns
 			$strCurrent = $this->findPageDNS($objPage);
@@ -392,7 +392,7 @@ class DomainLink extends Controller
 					$blnForce = true;
 				}
 				break;
-				
+
 			default:
 			case 'auto':
 				if ($this->Environment->ssl)
@@ -420,6 +420,6 @@ class DomainLink extends Controller
 		}
 		return $strUrl;
 	}
-	
+
 }
 ?>
