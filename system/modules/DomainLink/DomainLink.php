@@ -420,6 +420,4 @@ class DomainLink extends Controller
 		}
 		return $strUrl;
 	}
-
 }
-?>
