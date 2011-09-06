@@ -7,7 +7,7 @@
  * Extension for:
  * Contao Open Source CMS
  * Copyright (C) 2005-2010 Leo Feyer
- * 
+ *
  * Formerly known as TYPOlight Open Source CMS.
  *
  * This program is free software: you can redistribute it and/or
@@ -42,7 +42,8 @@ $GLOBALS['TL_DCA']['tl_settings']['fields']['baseDNS'] = array
 (
 	'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['baseDNS'],
 	'inputType'               => 'text',
-	'eval'                    => array('rgxp'=>'url', 'decodeEntities'=>true, 'maxlength'=>255, 'tl_class'=>'w50')
+	'eval'                    => array('decodeEntities'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
+	'save_callback'           => array(array('tl_settings_domainlink', 'saveBaseDNS'))
 );
 
 $GLOBALS['TL_DCA']['tl_settings']['fields']['secureDNS'] = array
@@ -68,4 +69,18 @@ $GLOBALS['TL_DCA']['tl_settings']['fields']['forceAbsoluteDomainLink'] = array
 	'eval'                    => array('tl_class'=>'w50')
 );
 
-?>
+/**
+ * DCA function class
+ */
+class tl_settings_domainlink
+{
+	public function saveBaseDNS($strValue)
+	{
+		$strValue = preg_replace('#/.*#', '', preg_replace('#^\w+://#', '', $strValue));
+		if (!preg_match('#^([\w\-]+(\.[\w\-]+)*?|(\d{1,3}\.){3}\d{1,3})(:\d+)?$#', $strValue))
+		{
+			throw new Exception(sprintf($GLOBALS['TL_LANG']['MSC']['invalidDomain'], $strValue));
+		}
+		return $strValue;
+	}
+}

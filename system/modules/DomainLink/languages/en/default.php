@@ -34,26 +34,6 @@
 
 
 /**
- * Settings
+ * Error messages
  */
-$GLOBALS['TL_CONFIG']['traceDomainLink']         = false;
-$GLOBALS['TL_CONFIG']['forceAbsoluteDomainLink'] = false;
-
-
-/**
- * Incompatible components.
- */
-$GLOBALS['DNS']['incompatibleComponents'] = array
-(
-	'Automator' => array('generateSitemap'),
-	'ModuleMaintenance' => true,
-	'ModuleChangelanguage' => true,
-	'GoogleSitemap' => array('generateSitemap')
-);
-
-
-/**
- * Hooks
- */
-$GLOBALS['TL_HOOKS']['generateFrontendUrl'][] = array('DomainLink', 'generateDomainLink');
-$GLOBALS['TL_HOOKS']['replaceInsertTags'][]   = array('DomainLink', 'replaceDomainLinkInsertTags');
+$GLOBALS['TL_LANG']['MSC']['invalidDomain'] = '%s is not a valid domain!';
