@@ -77,7 +77,7 @@ class tl_settings_domainlink
 	public function saveBaseDNS($strValue)
 	{
 		$strValue = preg_replace('#/.*#', '', preg_replace('#^\w+://#', '', $strValue));
-		if (!preg_match('#^([\w\-]+(\.[\w\-]+)*?|(\d{1,3}\.){3}\d{1,3})(:\d+)?$#', $strValue))
+		if (strlen($strValue)>0 && !preg_match('#^([\w\-]+(\.[\w\-]+)*?|(\d{1,3}\.){3}\d{1,3})(:\d+)?$#', $strValue))
 		{
 			throw new Exception(sprintf($GLOBALS['TL_LANG']['MSC']['invalidDomain'], $strValue));
 		}
