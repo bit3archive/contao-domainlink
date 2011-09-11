@@ -284,6 +284,9 @@ class DomainLink extends Controller
 			$objPage = &$GLOBALS['objPage'];
 		}
 
+		// decode encoded mailto: urls
+		$strUrl = html_entity_decode($strUrl);
+
 		if (!preg_match('/^#/', $strUrl) && !preg_match('#^(\w+:)#', $strUrl) && !preg_match('#^\{\{.*\}\}$#', $strUrl))
 		{
 			// find the target page dns
