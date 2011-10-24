@@ -159,6 +159,21 @@ class DomainLink extends Controller
 					}
 				}
 			}
+
+			// no page dns found, use base dns
+			if (!empty($GLOBALS['TL_CONFIG']['baseDNS']))
+			{
+				$this->arrDNSCache[$intId] = $GLOBALS['TL_CONFIG']['baseDNS'];
+			}
+
+			// no base dns defined, use request dns
+			else
+			{
+				$xhost = $this->Environment->httpXForwardedHost;
+				$this->arrDNSCache[$intId] = (!empty($xhost) ? $xhost . '/' : '') . $this->Environment->httpHost;
+			}
+
+			return $this->arrDNSCache[$intId];
 		}
 
 		// no page dns found, use base dns
@@ -240,6 +255,20 @@ class DomainLink extends Controller
 					}
 				}
 			}
+
+			// no page dns security found, use global dns security
+			if (!empty($GLOBALS['TL_CONFIG']['secureDNS']))
+			{
+				$this->arrSecurityCache[$intId] = $GLOBALS['TL_CONFIG']['secureDNS'];
+			}
+
+			// no global dns security defined, use auto mode
+			else
+			{
+				$this->arrSecurityCache[$intId] = 'auto';
+			}
+
+			return $this->arrSecurityCache[$intId];
 		}
 
 		// no page dns security found, use global dns security
