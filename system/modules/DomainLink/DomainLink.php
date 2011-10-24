@@ -102,19 +102,22 @@ class DomainLink extends Controller
 	 */
 	public function findPageDNS($objPage) {
 		if ($objPage != null) {
+			$intId = is_array($objPage) ? $objPage['id'] : $objPage->id;
+
+			// use cached dns
+			if (isset($this->arrDNSCache[$intId]))
+			{
+				return $this->arrDNSCache[$intId];
+			}
+
 			// inherit page details
 			if (is_array($objPage))
 			{
 				$objPage = $this->getPageDetails($objPage['id']);
 			}
 
-			// use cached dns
-			if (isset($this->arrDNSCache[$objPage->id]))
-			{
-				return $this->arrDNSCache[$objPage->id];
-			}
 			// the current page is the root page
-			else if ($objPage->type == 'root')
+			if ($objPage->type == 'root')
 			{
 				if (strlen($objPage->dns))
 				{
@@ -180,19 +183,22 @@ class DomainLink extends Controller
 	 */
 	public function findPageSecurity($objPage) {
 		if ($objPage != null) {
+			$intId = is_array($objPage) ? $objPage['id'] : $objPage->id;
+
+			// use cached security
+			if (isset($this->arrSecurityCache[$intId]))
+			{
+				return $this->arrSecurityCache[$intId];
+			}
+
 			// inherit page details
 			if (is_array($objPage))
 			{
 				$objPage = $this->getPageDetails($objPage['id']);
 			}
 
-			// use cached security
-			if (isset($this->arrSecurityCache[$objPage->id]))
-			{
-				return $this->arrSecurityCache[$objPage->id];
-			}
 			// the current page is the root page
-			else if ($objPage->type == 'root')
+			if ($objPage->type == 'root')
 			{
 				if (!empty($objPage->dns))
 				{
