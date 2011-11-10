@@ -306,6 +306,25 @@ class DomainLink extends Controller
 
 
 	/**
+	 * Absolutize all URLs of href,src attributes and URL() attributes of styles
+	 * @param $strHtml string
+	 * @param $objPage Database_Result|null
+	 * @return string
+	 */
+	public function absolutizeHTML($strHtml, Database_Result $objPage = null)
+	{
+		$objHelper = new DomainLinkHtmlReplaceHelper($this, $objPage);
+
+		// replace href and src attributes like href="myLink.html"
+		$strHtml = preg_replace_callback('~(href|src)=(["\'])([^"\']+)(["\'])~i', array($objHelper, 'replaceHrefSrc'), $strHtml);
+		// replace style-url attributes like url('myImage.jpg')
+		$strHtml = preg_replace_callback('~(url\(["\']?)([^"\'\)]+)(["\']?\))~i', array($objHelper, 'replaceCssUrl'), $strHtml);
+
+		return $strHtml;
+	}
+
+
+	/**
 	 * Absolutize an url.
 	 *
 	 * @param string
@@ -457,5 +476,64 @@ class DomainLink extends Controller
 			fclose($strTraceFile);
 		}
 		return $strUrl;
+	}
+}
+
+
+/**
+ * Class DomainLinkHtmlReplaceHelper
+ *
+ * Helper class for absolutizeHtml replace callbacks.
+ * @copyright  InfinitySoft 2010,2011
+ * @author     Tristan Lins <tristan.lins@infinitysoft.de>
+ * @package    DomainLink
+ */
+class DomainLinkHtmlReplaceHelper
+{
+	/**
+	 * @var DomainLink
+	 */
+	protected $objDomainLink;
+
+	/**
+	 * @var Database_Result|null
+	 */
+	protected $objPage;
+
+
+	/**
+	 * Create a new helper object.
+	 *
+	 * @param $objDomainLink DomainLink
+	 * @param $objPage Database_Result|null
+	 */
+	public function __construct(DomainLink $objDomainLink, Database_Result $objPage)
+	{
+		$this->objDomainLink = $objDomainLink;
+		$this->objPage = $objPage;
+	}
+
+
+	/**
+	 * replace callback
+	 *
+	 * @param $arrMatch array
+	 * @return string
+	 */
+	public function replaceHrefSrc($arrMatch)
+	{
+		return $arrMatch[1] . '=' . $arrMatch[2] . $this->objDomainLink->absolutizeUrl($arrMatch[3], $this->objPage) . $arrMatch[4];
+	}
+
+
+	/**
+	 * replace callback
+	 *
+	 * @param $arrMatch array
+	 * @return string
+	 */
+	public function replaceCssUrl($arrMatch)
+	{
+		return $arrMatch[1] . $this->objDomainLink->absolutizeUrl($arrMatch[2], $this->objPage) . $arrMatch[3];
 	}
 }
