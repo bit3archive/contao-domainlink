@@ -45,6 +45,8 @@ class DomainLink extends Controller
 {
 	/**
 	 * Singleton
+	 *
+	 * @var DomainLink
 	 */
 	private static $objInstance = null;
 
@@ -64,6 +66,7 @@ class DomainLink extends Controller
 
 	/**
 	 * DNS page related cache.
+	 *
 	 * @var array
 	 */
 	protected $arrDNSCache = array();
@@ -71,6 +74,7 @@ class DomainLink extends Controller
 
 	/**
 	 * DNS security related cache.
+	 *
 	 * @var array
 	 */
 	protected $arrSecurityCache = array();
@@ -78,6 +82,8 @@ class DomainLink extends Controller
 
 	/**
 	 * The trace file.
+	 *
+	 * @var string
 	 */
 	protected $file = null;
 
@@ -97,7 +103,8 @@ class DomainLink extends Controller
 
 	/**
 	 * Search recursive the page dns.
-	 * @param array
+	 *
+	 * @param $objPage array|Database_Result
 	 * @return string
 	 */
 	public function findPageDNS($objPage) {
@@ -193,7 +200,8 @@ class DomainLink extends Controller
 
 	/**
 	 * Search recursive the page security.
-	 * @param array
+	 *
+	 * @param $objPage array|Database_Result
 	 * @return string
 	 */
 	public function findPageSecurity($objPage) {
@@ -287,8 +295,8 @@ class DomainLink extends Controller
 
 	/**
 	 * Replace insert tags with their values
-	 * @param string
-	 * @param bool
+	 * @param $strBuffer string
+	 * @param $blnCache boolean
 	 * @return string
 	 */
 	public function replaceDomainLinkInsertTags($strBuffer, $blnCache=false)
@@ -327,8 +335,8 @@ class DomainLink extends Controller
 	/**
 	 * Absolutize an url.
 	 *
-	 * @param string
-	 * @param Database_Result
+	 * @param $strUrl string
+	 * @param $objPage Database_Result
 	 * @return string
 	 */
 	public function absolutizeUrl($strUrl, Database_Result $objPage = null)
@@ -386,9 +394,10 @@ class DomainLink extends Controller
 	/**
 	 * Generate an absolute url if the domain of the target page is different from the domain of the current page.
 	 *
-	 * @param array
-	 * @param string
-	 * @param string
+	 * @param $arrRow array
+	 * @param $strParams string
+	 * @param $strUrl string
+	 * @param $blnForce boolean
 	 * @return string
 	 */
 	public function generateDomainLink($arrRow, $strParams, $strUrl, $blnForce = false)
