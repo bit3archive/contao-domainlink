@@ -97,6 +97,9 @@ class DomainLink extends Controller
 		if ($GLOBALS['TL_CONFIG']['traceDomainLink'])
 		{
 			$this->file = TL_ROOT . '/system/logs/traceDomainLink-' . time() . '-r'  . rand() . '.log';
+			$strTraceFile = fopen($this->file, 'a');
+			fwrite($strTraceFile, "Request URL: " . $this->Environment->request . "\n\n");
+			fclose($strTraceFile);
 		}
 	}
 
