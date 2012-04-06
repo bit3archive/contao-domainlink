@@ -48,7 +48,8 @@ $GLOBALS['DNS']['incompatibleComponents'] = array
 	'Automator' => array('generateSitemap'),
 	'ModuleMaintenance' => true,
 	'ModuleChangelanguage' => true,
-	'GoogleSitemap' => array('generateSitemap')
+	'GoogleSitemap' => array('generateSitemap'),
+	'ModuleCatalog' => array('generateFilter')
 );
 
 
