@@ -46,6 +46,7 @@ $GLOBALS['TL_CONFIG']['forceAbsoluteDomainLink'] = false;
 $GLOBALS['DNS']['incompatibleComponents'] = array
 (
 	'Automator' => array('generateSitemap'),
+	'Controller' => array('redirectToFrontendPage'),
 	'ModuleMaintenance' => true,
 	'ModuleChangelanguage' => true,
 	'GoogleSitemap' => array('generateSitemap')
