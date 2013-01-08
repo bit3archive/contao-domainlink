@@ -52,6 +52,11 @@ $GLOBALS['DNS']['incompatibleComponents'] = array
 	'GoogleSitemap' => array('generateSitemap'),
 	'ModuleCatalog' => array('generateFilter'),
 	'News' => array('generateFiles'),
+        'Contao\RebuildIndex' => true,
+        'Contao\Automator' => array('generateSitemap'),
+        'Contao\Controller' => array('redirectToFrontendPage'),
+        'Contao\ModuleMaintenance' => true,
+        'Contao\News' => true,
 );
 
 
