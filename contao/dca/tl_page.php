@@ -1,4 +1,6 @@
-<?php if (!defined('TL_ROOT')) die('You can not access this file directly!');
+<?php if (!defined('TL_ROOT')) {
+    die('You can not access this file directly!');
+}
 
 /**
  * DomainLink
@@ -7,7 +9,7 @@
  * Extension for:
  * Contao Open Source CMS
  * Copyright (C) 2005-2010 Leo Feyer
- * 
+ *
  * Formerly known as TYPOlight Open Source CMS.
  *
  * This program is free software: you can redistribute it and/or
@@ -25,6 +27,7 @@
  * Software Foundation website at <http://www.gnu.org/licenses/>.
  *
  * PHP version 5
+ *
  * @copyright  InfinitySoft 2010,2011
  * @author     Tristan Lins <tristan.lins@infinitysoft.de>
  * @package    DomainLink
@@ -34,17 +37,21 @@
 
 
 $GLOBALS['TL_DCA']['tl_page']['palettes']['root'] = preg_replace(
-	'#([,;]dns)([,;])#',
-	'$1,secureDNS$2',
-	$GLOBALS['TL_DCA']['tl_page']['palettes']['root']);
-
-$GLOBALS['TL_DCA']['tl_page']['fields']['secureDNS'] = array
-(
-	'label'                   => &$GLOBALS['TL_LANG']['tl_page']['secureDNS'],
-	'inputType'               => 'select',
-	'options'                 => array('auto', 'insecure', 'secure'),
-	'reference'               => &$GLOBALS['TL_LANG']['tl_page']['dns_mode'],
-	'eval'                    => array('includeBlankOption'=>true, 'blankOptionLabel'=>&$GLOBALS['TL_LANG']['tl_page']['dns_mode']['inherit'], 'tl_class'=>'w50')
+    '#([,;]dns)([,;])#',
+    '$1,secureDNS$2',
+    $GLOBALS['TL_DCA']['tl_page']['palettes']['root']
 );
 
-?>
+$GLOBALS['TL_DCA']['tl_page']['fields']['dns']['eval']['tl_class'] .= ' w50';
+$GLOBALS['TL_DCA']['tl_page']['fields']['secureDNS'] = array
+(
+    'label'     => &$GLOBALS['TL_LANG']['tl_page']['secureDNS'],
+    'inputType' => 'select',
+    'options'   => array('auto', 'insecure', 'secure'),
+    'reference' => &$GLOBALS['TL_LANG']['tl_page']['dns_mode'],
+    'eval'      => array(
+        'includeBlankOption' => true,
+        'blankOptionLabel'   => &$GLOBALS['TL_LANG']['tl_page']['dns_mode']['inherit'],
+        'tl_class'           => 'w50'
+    )
+);
