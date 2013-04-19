@@ -38,7 +38,7 @@
  */
 $GLOBALS['TL_LANG']['tl_settings']['baseDNS']                 = array('Base domainname', 'Specify your base domain here, this is used as fallback.');
 $GLOBALS['TL_LANG']['tl_settings']['secureDNS']               = array('Secured domain', 'Specify the security policy.');
-$GLOBALS['TL_LANG']['tl_settings']['traceDomainLink']         = array('Developer mode', 'Activate the tracing and developer mode of DomainLink. If its activated a tracing log is generated in system/tmp/traceDomainLink-X.log for every single request.');
+$GLOBALS['TL_LANG']['tl_settings']['traceDomainLink']         = array('Developer mode', 'Activate the tracing and developer mode of DomainLink. If its activated a tracing log is generated in system/logs/traceDomainLink-X.log for every single request.');
 $GLOBALS['TL_LANG']['tl_settings']['forceAbsoluteDomainLink'] = array('Force absolute URLs', 'Activate this option to force all URLs to be absolute.');
 
 
