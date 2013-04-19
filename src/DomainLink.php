@@ -405,7 +405,7 @@ class DomainLink extends Controller
 	 */
 	public function generateDomainLink($arrRow, $strParams, $strUrl, $blnForce = false)
 	{
-		$arrTrace = debug_backtrace();
+		$arrTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
 
 		if ($GLOBALS['TL_CONFIG']['traceDomainLink'])
 		{
