@@ -2,7 +2,6 @@
 	"name":"bit3/contao-domainlink",
 	"description":"Set of basic settings for Contao OpenSource CMS",
 	"keywords":["contao", "settings"],
-	"version":"1.5.0",
 	"type":"contao-module",
 	"homepage":"http://bit3.de",
 	"license":"LGPL-3.0+",
