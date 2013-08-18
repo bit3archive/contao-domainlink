@@ -1,35 +1,14 @@
-<?php if (!defined('TL_ROOT')) die('You can not access this file directly!');
+<?php
 
 /**
- * DomainLink
- * Copyright (C) 2011 Tristan Lins
+ * DomainLink extension for the Contao Open Source CMS
  *
- * Extension for:
- * Contao Open Source CMS
- * Copyright (C) 2005-2010 Leo Feyer
+ * Copyright (C) 2013 bit3 UG <http://bit3.de>
  *
- * Formerly known as TYPOlight Open Source CMS.
- *
- * This program is free software: you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation, either
- * version 3 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program. If not, please visit the Free
- * Software Foundation website at <http://www.gnu.org/licenses/>.
- *
- * PHP version 5
- * @copyright  InfinitySoft 2010,2011
- * @author     Tristan Lins <tristan.lins@infinitysoft.de>
- * @package    DomainLink
- * @license    LGPL
- * @filesource
+ * @package DomainLink
+ * @author  Tristan Lins <tristan.lins@bit3.de>
+ * @link    http://bit3.de
+ * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
 
@@ -45,18 +24,18 @@ $GLOBALS['TL_CONFIG']['forceAbsoluteDomainLink'] = false;
  */
 $GLOBALS['DNS']['incompatibleComponents'] = array
 (
-	'Automator' => array('generateSitemap'),
-	'Controller' => array('redirectToFrontendPage'),
-	'ModuleMaintenance' => true,
-	'ModuleChangelanguage' => true,
-	'GoogleSitemap' => array('generateSitemap'),
-	'ModuleCatalog' => array('generateFilter'),
-	'News' => array('generateFiles'),
-        'Contao\RebuildIndex' => true,
-        'Contao\Automator' => array('generateSitemap'),
-        'Contao\Controller' => array('redirectToFrontendPage'),
-        'Contao\ModuleMaintenance' => true,
-        'Contao\News' => true,
+	'Automator'                => array('generateSitemap'),
+	'Controller'               => array('redirectToFrontendPage'),
+	'ModuleMaintenance'        => true,
+	'ModuleChangelanguage'     => true,
+	'GoogleSitemap'            => array('generateSitemap'),
+	'ModuleCatalog'            => array('generateFilter'),
+	'News'                     => array('generateFiles'),
+	'Contao\RebuildIndex'      => true,
+	'Contao\Automator'         => array('generateSitemap'),
+	'Contao\Controller'        => array('redirectToFrontendPage'),
+	'Contao\ModuleMaintenance' => true,
+	'Contao\News'              => true,
 );
 
 
