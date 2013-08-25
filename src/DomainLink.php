@@ -397,11 +397,24 @@ class DomainLink extends Controller
 					|| in_array($arrCall['function'], $GLOBALS['DNS']['incompatibleComponents'][$arrCall['class']]))
 			) {
 				if ($GLOBALS['TL_CONFIG']['traceDomainLink']) {
-					fwrite($strTraceFile, "Result: cancel processing, incompatibility check\n");
+					fprintf(
+						$strTraceFile,
+						"Result: cancel processing, %s:%s was rejected as incompatible\n",
+						$arrCall['class'],
+						$arrCall['function']
+					);
 					fwrite($strTraceFile, "\n\n");
 					fclose($strTraceFile);
 				}
 				return $strUrl;
+			}
+			if ($GLOBALS['TL_CONFIG']['traceDomainLink']) {
+				fprintf(
+					$strTraceFile,
+					"Check compatibility of %s:%s was accepted\n",
+					$arrCall['class'],
+					$arrCall['function']
+				);
 			}
 		}
 
@@ -452,6 +465,7 @@ class DomainLink extends Controller
 			fwrite($strTraceFile, "\n\n");
 			fclose($strTraceFile);
 		}
+
 		return $strUrl;
 	}
 }
