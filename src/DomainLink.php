@@ -118,7 +118,7 @@ class DomainLink extends Controller
 		$arrTrail =  ($objPage->type != 'root') ? $this->getPageTrail($objPage->pid) : array();
 		$arrTrail[] = $objPage->id;
 		
-		return $this->arrTrailCache[$objPage->id] = $arrTrail;
+		return $this->arrTrailCache[$intId] = $arrTrail;
 	}
 
 	/**
