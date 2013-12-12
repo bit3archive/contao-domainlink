@@ -58,6 +58,14 @@ class DomainLink extends Controller
 
 
 	/**
+	 * Page trail related cache.
+	 *
+	 * @var array
+	 */
+	protected $arrTrailCache = array();
+
+
+	/**
 	 * The trace file.
 	 *
 	 * @var string
@@ -80,6 +88,38 @@ class DomainLink extends Controller
 		}
 	}
 
+	/**
+	 * 
+	 * @param type $objPage
+	 * @return array
+	 */
+	public function getPageTrail($intId) {
+
+		if (!strlen($intId) ||$intId < 1)
+		{
+			return array();
+		}
+		
+		//check for cached results
+		if (isset($this->arrTrailCache[$intId]))
+		{
+			return $this->arrTrailCache[$intId];
+		}
+		
+		$objPage = $this->Database->prepare("SELECT * FROM tl_page WHERE id=?")
+						->limit(1)
+						->execute($intId);
+
+		if ($objPage->numRows < 1)
+		{
+			return array();
+		}
+		
+		$arrTrail =  ($objPage->type != 'root') ? $this->getPageTrail($objPage->pid) : array();
+		$arrTrail[] = $objPage->id;
+		
+		return $this->arrTrailCache[$objPage->id] = $arrTrail;
+	}
 
 	/**
 	 * Search recursive the page dns.
@@ -98,9 +138,10 @@ class DomainLink extends Controller
 				return $this->arrDNSCache[$intId];
 			}
 
-			// inherit page details
-			if (is_array($objPage)) {
-				$objPage = $this->getPageDetails($objPage['id']);
+			// get pageObjects
+			if (is_array($objPage))
+			{
+				$objPage = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ?')->execute($objPage['id']);
 			}
 
 			// the current page is the root page
@@ -112,10 +153,7 @@ class DomainLink extends Controller
 			}
 			// search for a root page with defined dns
 			else {
-				if (!is_array($objPage->trail)) {
-					$objPage = $this->getPageDetails($objPage->id);
-				}
-				$arrTrail = $objPage->trail;
+				$arrTrail = (!is_array($objPage->trail)) ? $this->getPageTrail($objPage->id) : $objPage->trail;
 				if (is_array($arrTrail) && count($arrTrail) > 0) {
 					$objRootPage = $this->Database->execute(
 						"
@@ -186,9 +224,10 @@ class DomainLink extends Controller
 				return $this->arrSecurityCache[$intId];
 			}
 
-			// inherit page details
-			if (is_array($objPage)) {
-				$objPage = $this->getPageDetails($objPage['id']);
+			// get pageObject
+			if (is_array($objPage))
+			{
+				$objPage = $this->Database->prepare('SELECT * FROM tl_page WHERE id = ?')->execute($objPage['id']);
 			}
 
 			// the current page is the root page
@@ -201,10 +240,7 @@ class DomainLink extends Controller
 			}
 			// search for a root page with defined dns security
 			else {
-				if (!is_array($objPage->trail)) {
-					$objPage = $this->getPageDetails($objPage->id);
-				}
-				$arrTrail = $objPage->trail;
+				$arrTrail = (!is_array($objPage->trail)) ? $this->getPageTrail($objPage->id) : $objPage->trail;
 				if (is_array($arrTrail) && count($arrTrail) > 0) {
 					$objRootPage = $this->Database->execute(
 						"
