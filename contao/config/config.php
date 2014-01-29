@@ -28,6 +28,7 @@ $GLOBALS['DNS']['incompatibleComponents'] = array
 	'Controller'               => array('redirectToFrontendPage'),
 	'ModuleMaintenance'        => true,
 	'ModuleChangelanguage'     => true,
+	'PageTeaser'               => true,
 	'GoogleSitemap'            => array('generateSitemap'),
 	'ModuleCatalog'            => array('generateFilter'),
 	'News'                     => array('generateFiles'),
